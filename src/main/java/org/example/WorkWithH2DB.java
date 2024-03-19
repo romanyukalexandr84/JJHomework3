@@ -2,7 +2,7 @@ package org.example;
 
 import java.sql.*;
 
-public class Main {
+public class WorkWithH2DB {
     private static void createTable(Connection connection) throws SQLException {
         try (Statement statement = connection.createStatement()) {
             statement.execute("""
@@ -48,12 +48,14 @@ public class Main {
     private static void workWithDB(Connection connection) throws SQLException {
         createTable(connection);
         fillTable(connection);
+        printTable(connection);
         deleteRecord(connection);
         changeRecord(connection, 57, 3);
         changeRecord(connection, 15, 4);
+        printTable(connection);
     }
 
-    private static void printDB(Connection connection) throws SQLException {
+    private static void printTable(Connection connection) throws SQLException {
         try (Statement statement = connection.createStatement()) {
             ResultSet linesOfTable = statement.executeQuery("SELECT id, firstName, secondName, age FROM Student");
             while (linesOfTable.next()) {
@@ -70,7 +72,6 @@ public class Main {
     public static void main(String[] args) {
         try (Connection connection = DriverManager.getConnection("jdbc:h2:mem:test")) {
             workWithDB(connection);
-            printDB(connection);
         } catch (SQLException e) {
             throw new RuntimeException(e.getMessage());
         }
